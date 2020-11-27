@@ -1,0 +1,14 @@
+/* 
+* vue-cli的安装
+*/
+
+// 如果需要，请先卸载旧版本(1.x、2.x)
+#  npm uninstall vue-cli -g
+// 安装新版本 4.x 确保node.js版本在8.9以上
+#  npm install -g @vue/cli
+// 查看版本
+# vue --version
+// 创建一个项目
+# vue create hello-world
+  or
+# vue ui
