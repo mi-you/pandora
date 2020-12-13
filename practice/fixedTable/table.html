@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>table</title>
+    <style>
+      body{
+        background-color: #e2e2e2;
+      }
+      td, th {
+          border: 1px solid #333;
+          width: 200px;
+      }
+      table {
+          border-collapse: collapse;
+          width: 1200px;
+          height: 800px;
+      }
+      .table{
+        background-color: #fff;
+        margin: 100px 500px;
+        overflow: hidden;
+        position: relative;
+      }
+      .table1{
+        width: 100%;
+        height: 500px;
+        overflow: auto;
+      }
+      .table1 ~ .table1 {
+        position: absolute;
+        top: 0;
+        left: auto;
+        right: 0;
+        /* overflow: hidden; */
+        width: 400px;
+        height: calc(100% - 17px);
+      }
+      .table1 ~ .table1>table {
+        position: absolute;
+        top: 0;
+        left: auto;
+        right: 0;
+        z-index: 1000;
+        background-color: red;
+      }
+      .del{
+        height: 60px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='table'>
+      <div class='table1'>
+        <table>
+          <thead>
+            <tr><th>title1</th><th>title2</th><th>title3</th><th>title4</th><th>title5</th><th>title6</th></tr>
+          </thead>
+          <tbody class="table-body">
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>2</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>3</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>4</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>6</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>2</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>3</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>4</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>6</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>2</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>3</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>4</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+            <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>6</td><td onclick="del(this)"><div class="del">删除</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      var table = document.getElementsByClassName("table"),//table容器
+          tables = document.getElementsByClassName("table1"),//要拷贝的表格
+          tableBody = document.getElementsByClassName("table-body");//
+      var tableBox = table[0] //获取table容器
+      var clone = tables[0].cloneNode(true) //clone table
+      tableBox.appendChild(clone) //将clone的table添加到table容器中
+
+      // 删除多个表格的同一行
+      function del(td){
+        var index = getIndex(td)
+          // 删除多个表格的同一位置
+        for(var i = 0,len = tableBody.length; i < len; i++){
+          var trs = tableBody[i].querySelectorAll("tr")
+          tableBody[i].removeChild(trs[index])
+        }
+      }
+
+      //传入td元素获取其行所在的位置
+      function getIndex(td){
+        var pTr = td.parentNode, //tr
+            ppTr = pTr.parentNode, //tbody
+            ppTrs = ppTr.querySelectorAll("tr"), //tbody=>trs
+            index = 0; //位置
+          //获取点击的行的位置
+        for(var i = 0,len = ppTrs.length; i < len; i++){
+            if(ppTrs[i] === pTr){
+              index = i
+              break
+            }
+        }
+        return index
+      }
+
+
+      //绑定滚动事件
+      function scroll(){
+        tables = document.getElementsByClassName("table1")
+        for(var i = 0,len = tables.length; i < len; i++){
+          tables[i].addEventListener("scroll",scrollTogether,false)
+        }
+      }
+      scroll()
+      
+      //同步滚动
+      var timer = null
+      function scrollTogether(){
+        var that = this
+        clearTimeout(timer)
+        timer = setTimeout(function(){
+           tables = document.getElementsByClassName("table1")
+            for(var i = 0,len = tables.length; i < len; i++){
+              tables[i].scrollTop = that.scrollTop
+            }
+        },10,that)
+       
+      }
+    </script>
+  </body>
+</html>

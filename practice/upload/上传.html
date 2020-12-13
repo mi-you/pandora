@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <title>Document</title>
+  <style>
+    #upload-img {
+      display: inline-block;
+      position: relative;
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      overflow: hidden;
+      width: 100px;
+      height: 140px;
+      text-align: center;
+    }
+    #upload-img .glyphicon {
+      line-height: 140px;
+    }
+    .base-box{
+      position: absolute;
+      display: block;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+    .up-img{
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+    .base-box.delete{
+      display: none;
+    }
+    .up-img ~ .delete{
+      display:block;
+    }
+    .up-img ~ .delete:hover{
+      opacity: 1;
+      background-color: rgba(0,0,0,.4);
+      color:#fff
+    }
+  </style>
+</head>
+<body>
+  <form action="" enctype="multipart/form-data" type='post' id="ss">
+    <div id="upload-img">
+      <span class="glyphicon glyphicon-plus"></span>
+      <img class="base-box up-img" src="./photo.png" id="photo"/>
+      <input type="file" name="img" class="base-box up-input" id="up-file"/>
+      <div class="base-box delete" id="delete-photo">
+        <span class="glyphicon glyphicon-trash"></span>
+      </div>
+    </div>
+  </form>
+  <div style="width: 200px;height: 200px;background-color: aqua;" id="fff">
+    <input value="aaaaaaaaa" id="zzz" style="pointer-events: none;"></input>
+  </div>
+  <script>
+    window.onload = function(){
+      var delPhoto = document.getElementById("delete-photo")
+      var inputFile = document.getElementById("up-file")
+      //给上传图片绑定事件
+      inputFile.addEventListener("change",imgLoad,false)
+      delPhoto.addEventListener("click",function(){
+        addOrDelPhoto("delete")
+      },false)
+      
+      function addOrDelPhoto(addOrDel,url){
+        var photo = document.getElementById("photo")
+        if(addOrDel === "delete"){
+          photo.removeAttribute("src")
+          photo.classList.remove("up-img")
+        }else if(addOrDel === "add"){
+          var src = window.URL.createObjectURL(url)
+          photo.src = src
+          photo.classList.add("up-img")
+          photo.onload = function(){
+            window.URL.revokeObjectURL(src)
+          }
+        }
+      }
+
+      function imgLoad(){
+        var file = this.files[0]
+        if(file){
+          if(!/^image\//.test(file.type)){
+            return 
+          }
+          addOrDelPhoto("add",file)
+          var reader = new FileReader()
+          var imgFile
+          reader.onload = function(e){
+            var imgFile = e.target.result
+            console.log(imgFile)
+            addOrDelPhoto("add",imgFile)
+          }
+          reader.readAsDataURL(file)
+        }
+      }
+    }
+  </script>
+</body>
+</html>

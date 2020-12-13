@@ -1,0 +1,6 @@
+html{font-size:10px}
+@media screen and (min-width:320px) and (max-width:1024px){
+    html{
+        font-size:calc(1vw / 0.375);/*在375屏下搭建页面 1vw=3.75px*/
+    }
+}

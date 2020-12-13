@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* 一般样式表里都会有这个样式，此样式可删 */
+    html,body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    /* 容器盒子 */
+    .addr-auto {
+      padding: 15px;
+      font-size: 14px;
+    }
+    /* title头部样式 */
+    .addr-title {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 10px;
+        padding-right: 4px;
+    }
+    .addr-title>span:first-child {
+        color: rgb(255,90,0);
+    }
+    .addr-title.addr-close>span:first-child {
+        color: #999;
+    }
+    .addr-title>span:last-child {
+        user-select: none;
+        color: #999;
+        transform: rotate(-90deg) scaleY(1.8);
+        transition: all .3s linear;
+        transform-origin: 44% 55%;
+    }
+    .addr-title.addr-close>span:last-child {
+        transform: rotate(90deg) scaleY(1.8);
+    }
+    /* body区折叠展开无过渡 */
+    .addr-body {
+      transition: all 100 cubic-bezier(0.8,0.2,0.9,0.3);
+      max-height: 1000px;
+    }
+    .addr-close ~ .addr-body{
+        overflow: hidden;
+        max-height: 0;
+    }
+    /* content内容区样式 */
+    .addr-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        height: 62px;
+        border-radius: 8px;
+        background-color: rgb(251,251,251);
+    }
+    .addr-content>div:first-child {
+        flex: auto;
+        height: 100%;
+    }
+    .addr-content>div:last-child {
+        padding: 10px 8px 10px 20px;
+        border-left: 1px solid rgb(230,230,230);
+        color: rgb(255,90,0);
+    }
+    .addr-content textarea {
+        display: block;
+        box-sizing: border-box;
+        padding-right: 15px;
+        resize: none;
+        border: none;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0);
+    }
+    .addr-content textarea:focus {
+        outline: none;
+    }
+    /* footer按钮 */
+    .addr-footer {
+        text-align: right;
+    }
+    .addr-footer>span {
+        display: inline-block;
+        padding: 6px 28px;
+        border-radius: 15px/50%;
+        background-image: linear-gradient(to right, rgb(255,135,0), rgb(255,79,11));
+        color: #fff;
+    }
+
+    /* 删除按钮样式 此样式动态追加 */
+    .addr-del {
+        display: inline-flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: rgb(200,200,200);
+        color: #fff;
+        cursor: pointer;
+    }
+    .addr-del:before,.addr-del:after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 60%;
+        border-bottom: 2px solid #fff;
+        transform: rotate(45deg);
+    }
+    .addr-del:after {
+        transform: rotate(-45deg);
+    }
+  </style>
+<body>
+  <!-- id用于获取DOM，class用于设置样式 -->
+<div class="addr-auto">
+  <div class="addr-title addr-close" id="addr-title">
+    <span>智能填写</span>
+    <span id="addr-on-off">></span>
+  </div>
+  <div class="addr-body">
+    <div class="addr-content">
+      <div>
+        <textarea id="addr-text" placeholder="粘贴地址信息，可自动识别并填写如：淘小宝，188********，浙江省 杭州市 xx区 xx街道 xxxxx"></textarea>
+      </div>
+      <div id="addr-delete">粘贴</div>
+    </div>
+    <div class="addr-footer">
+      <span>填写</span>
+    </div>
+  </div>
+  
+</div>
+<script>
+  // 获取DOM元素
+  var del = document.getElementById("addr-delete")
+      text = document.getElementById("addr-text")
+      title = document.getElementById("addr-title")
+      onoff = document.getElementById("addr-on-off")
+  // 为DOM元素绑定事件
+  text.addEventListener("input",handleRight,false)
+  onoff.addEventListener("click",handleSwitch,false)
+  // 监听文本域内容的改变
+  function handleRight(){
+    if(this.value){
+      if(del.innerHTML !== "粘贴"){
+        return
+      }
+      var spanElement = document.createElement("span")
+      spanElement.classList.add("addr-del")
+      spanElement.addEventListener("click",handleClearText,false)
+      del.innerHTML = ""
+      del.appendChild(spanElement)
+    }else{
+      del.innerHTML = "粘贴"
+    }
+  }
+  // 清空文本域并复原样式 
+  function handleClearText(){
+    text.value = ""
+    del.innerHTML = "粘贴"
+  }
+  // 折叠与展开
+  function handleSwitch(){
+    if(title){
+      if(title.classList.toString().indexOf("addr-close") === -1){
+        title.classList.add("addr-close")
+      }else{
+        title.classList.remove("addr-close")
+      }
+    }
+  }
+</script>
+</body>
