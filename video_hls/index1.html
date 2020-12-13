@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>演示：HTML5点播m3u8(hls)格式视频</title>
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/demo.css">
+<style>
+
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="row main">
+        <div class="col-md-12">
+            <div class="container" style="width: 96%; margin: 30px auto">
+                <video id="video" controls loop="false" width="100%" ></video>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="hls.js"></script>
+
+<script>
+var video = document.getElementById('video');
+  if(Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource('http://198.87.103.100:8090/hls/channel101.m3u8');
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,function() {
+      video.play();
+  });
+ } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = 'http://198.87.103.100:8090/hls/channel101.m3u8';
+    video.addEventListener('loadedmetadata',function() {
+      video.play();
+    });
+  }
+</script>
+</body>
+</html>
