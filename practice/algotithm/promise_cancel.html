@@ -32,8 +32,25 @@
         })
       }
 
-      start.addEventListener('click',() => delayExe(2000))
+      start.addEventListener('click',e => {
+        debugger
+        console.log('div',e.eventPhase)
+        debugger
+        delayExe(500)
+      },true)
 
+      document.addEventListener('click',e => {
+        // e.stopImmediatePropagation()
+        // e.stopPropagation()
+        // console.log(e,'eee',e.currentTarget)
+        debugger
+        console.log('doc',e.eventPhase)
+        debugger
+      },true)
+      // document.onclick = function(e){
+      //   e.stopImmediatePropagation()
+      //   e.stopPropagation()
+      // }
 
 
 

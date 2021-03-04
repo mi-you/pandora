@@ -103,21 +103,39 @@
 // a.then(() => new Promise((resolve,reject) => {
 //   setTimeout(resolve,2000)
 // }))
-let abc = {
-  [Symbol.iterator](){
-    let index = 0;
-    return {
-      next(){
-        if(index < 4){
-          return {done:false,value:index++}
-        }else if(index === 4){
-          return {done:false,value:Promise.reject(index++)}
-        }else{
-          return {done:true,value:undefined}
-        }
-      }
-    }
+// let abc = {
+//   [Symbol.iterator](){
+//     let index = 0;
+//     return {
+//       next(){
+//         if(index < 4){
+//           return {done:false,value:index++}
+//         }else if(index === 4){
+//           return {done:false,value:Promise.reject(index++)}
+//         }else{
+//           return {done:true,value:undefined}
+//         }
+//       }
+//     }
+//   }
+// }
+// let p = Promise.all(abc)
+// p.then(e => console.log(e),e => console.log(e))
+
+  // 不考虑a，b包含小数
+function bigNumberAdd(a,b){
+  let sum = a + b,
+    c = 0; //存储进位
+  if(Number.isSafeInteger(sum)){
+    return sum
   }
+  sum = '';
+  a = String(a).split('');
+  b = String(b).split('');
+  while(a.length || b.length || c){
+    c += ~~a.pop() + ~~b.pop();
+    sum = c % 10 + sum;
+    c = c > 9;
+  }
+  return sum.replace(/^0+/,'')
 }
-let p = Promise.all(abc)
-p.then(e => console.log(e),e => console.log(e))
