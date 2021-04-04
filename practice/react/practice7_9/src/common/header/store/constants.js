@@ -1,5 +1,0 @@
-export const SEARCH_FOCUS = 'header/search_input_focus'
-export const SEARCH_BLUR = 'header/search_input_blur'
-export const CHANGE_LIST = 'header/change_list'
-export const MOUSE_ENTER_SEARCH = 'header/mouse_enter_search'
-export const SWITCH_TO_SWITCH = 'header/switch_to_switch'
