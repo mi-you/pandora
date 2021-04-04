@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>表格测试页</title>
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        table,table tr td {
+            border:1px solid #ccc;
+        }
+        table tr td{
+            padding: 5px 10px;
+        }
+        tr:nth-child(6n+1),tr:nth-child(6n+2),tr:nth-child(6n+3){
+          background-color: red;
+        }
+        tr:nth-child(6n+4),tr:nth-child(6n+5),tr:nth-child(6n){
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+<div id="table-content"></div>
+<script>
+    window.onload = function(){
+        //获取数据
+        var data = getData();
+        console.log(data);
+        //处理数据
+        var trNum = treeLen(data);
+        var trArr = createTr(data,6);
+        //在指点容器(id)里展示数据
+        showTableInContent(trArr,"table-content");
+    };
+    //给父节点添加其最底层节点个数标志
+    function treeLen(data){
+        var length = 0;
+        for(var i = 0;i < data.length;i++){
+            data[i].length = 1;
+            if(data[i].reviewTemplateType == 1){
+                if(data[i].childrens){
+                    data[i].length = data[i].childrens.length;
+                }
+            }else{
+                data[i].length = treeLen(data[i].childrens);
+            }
+            length += data[i].length;
+        }
+        return length;
+    }
+    //创建所有行
+    function createTr(data,deep){
+        var arr = [],
+            siteI = 0,
+            siteII = 0;
+        for(var i = 0;i < data.length;i ++){
+            if(data[i].reviewTemplateType == 1){
+                if(data[i].childrens){
+                    for(var j = 0;j < data[i].childrens.length;j++){
+                        var tr = document.createElement("tr");
+                        for(var k = 0;k < deep - 1;k++){
+                            var td = document.createElement("td");
+                            if(k == 0){
+                                td.innerHTML = data[i].childrens[j].reviewTargetName || data[i].childrens[j].reviewStandardName;
+                                td.setAttribute("id",data[i].childrens[j].reviewTargetId);
+                                tr.insertBefore(td,tr.firstChild);
+
+                                // var tr = document.createElement("tr");
+                                // td.innerHTML = '<td></td><td rowspan="' + (len - 3) + '"></td><td></td><td><input /></td>';
+                                // table.appendChild(tr);
+                                // var tr = document.createElement("tr");
+                                // td.innerHTML = '<td></td><td rowspan="' + (len - 1) + '"></td>';
+                                // table.appendChild(tr)
+
+                            }else{
+                                td.innerHTML = "-";
+                                tr.insertBefore(td,tr.firstChild);
+                            }
+                        };
+                        arr.push(tr);
+                    };
+                }else{
+                    var tr = document.createElement("tr");
+                    for(var k = 0;k < deep - 1;k++){
+                        var td = document.createElement("td");
+                        td.innerHTML = "-";
+                        tr.insertBefore(td,tr.firstChild);
+                    };
+                    arr.push(tr);
+                }
+                var td = document.createElement("td");
+                td.innerHTML = data[i].reviewTargetName;
+                td.setAttribute("rowspan",data[i].length);
+                arr[siteII].insertBefore(td,arr[siteII].firstChild);
+                siteII += data[i].length;
+            }else{
+                arr = arr.concat(createTr(data[i].childrens,deep - 1));
+                var td = document.createElement("td");
+                td.innerHTML = data[i].reviewTargetName;
+                td.setAttribute("rowspan",data[i].length);
+                arr[siteI].insertBefore(td,arr[siteI].firstChild);
+            };
+            siteI += data[i].length;
+            siteII = siteI;
+        }
+        return arr;
+    }
+    //把数据写入表格并把表格放入容器
+    function showTableInContent(trArr,tableContent){
+        var tableContent = document.getElementById(tableContent),
+            table = document.createElement("table");
+        for(var i = 0,len = trArr.length;i < len;i++){
+            table.appendChild(trArr[i]);
+        }
+        tableContent.appendChild(table);
+    };
+
+    function getData(){
+        return [{
+            "reviewTargetId": "001",
+            "reviewTargetName": "指标1",
+            "reviewTemplateScore": 10,
+            "reviewTemplateType": 0,  // 0 代表非末级指标
+            "childrens": [
+                {
+                    "reviewTargetId": "002",
+                    "reviewTargetName": "指标1.1",
+                    "reviewTemplateScore": 5,
+                    "reviewTemplateType": 0,   // 1 代表末级指标
+                    "childrens":[
+                        {
+                            "reviewTargetId": "003",
+                            "reviewTargetName": "指标1.1.1",
+                            "reviewTemplateScore": 2,
+                            "reviewTemplateType": 1,   // 1 代表末级指标
+                        },
+                        {
+                            "reviewTargetId": "004",
+                            "reviewTargetName": "指标1.1.2",
+                            "reviewTemplateScore": 3,
+                            "reviewTemplateType": 0,   // 1 代表末级指标
+                            "childrens":[
+                                {
+                                    "reviewTargetId": "003",
+                                    "reviewTargetName": "指标1.1.2.1",
+                                    "reviewTemplateScore": 2,
+                                    "reviewTemplateType": 0,   // 1 代表末级指标
+                                    "childrens":[
+                                        {
+                                            "reviewTargetId": "003",
+                                            "reviewTargetName": "指标1.1.2.1.1",
+                                            "reviewTemplateScore": 2,
+                                            "reviewTemplateType": 1,   // 1 代表末级指标
+                                            "childrens":[
+                                                {
+                                                    "reviewTargetId": "003",
+                                                    "reviewTargetName": "指标1.1.2.1.1.1",
+                                                    "reviewTemplateScore": 2
+                                                },
+                                                {
+                                                    "reviewTargetId": "004",
+                                                    "reviewTargetName": "指标1.1.2.1.1.2",
+                                                    "reviewTemplateScore": 3
+                                                }]
+                                        },
+                                        {
+                                            "reviewTargetId": "004",
+                                            "reviewTargetName": "指标1.1.2.1.2",
+                                            "reviewTemplateScore": 3,
+                                            "reviewTemplateType": 1,   // 1 代表末级指标
+                                            "childrens":[
+                                                {
+                                                    "reviewTargetId": "003",
+                                                    "reviewTargetName": "指标1.1.2.1.2.1",
+                                                    "reviewTemplateScore": 2
+                                                },
+                                                {
+                                                    "reviewTargetId": "004",
+                                                    "reviewTargetName": "指标1.1.2.1.2.2",
+                                                    "reviewTemplateScore": 3
+                                                }]
+                                        }]
+                                },
+                                {
+                                    "reviewTargetId": "004",
+                                    "reviewTargetName": "指标1.1.2.2",
+                                    "reviewTemplateScore": 3,
+                                    "reviewTemplateType": 1,   // 1 代表末级指标
+                                    "childrens":[
+                                        {
+                                            "reviewTargetId": "003",
+                                            "reviewTargetName": "指标1.1.2.2.1",
+                                            "reviewTemplateScore": 2
+                                        },
+                                        {
+                                            "reviewTargetId": "004",
+                                            "reviewTargetName": "指标1.1.2.2.2",
+                                            "reviewTemplateScore": 3
+                                        }]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "reviewTargetId": "005",
+                    "reviewTargetName": "指标1.2",
+                    "reviewTemplateScore": 5,
+                    "reviewTemplateType": 0,
+                    "childrens":[
+                        {
+                            "reviewTargetId": "006",
+                            "reviewTargetName": "指标1.2.1",
+                            "reviewTemplateScore": 5,
+                            "reviewTemplateType": 1,   // 1 代表末级指标
+                            "childrens":[
+                                {
+                                    "reviewTargetId": "003",
+                                    "reviewTargetName": "指标1.2.1.1",
+                                    "reviewTemplateScore": 2
+                                },
+                                {
+                                    "reviewTargetId": "004",
+                                    "reviewTargetName": "指标1.2.1.2",
+                                    "reviewTemplateScore": 3
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+            {
+                "reviewTargetId": "007",
+                "reviewTargetName": "指标2",
+                "reviewTemplateScore": 10,
+                "reviewTemplateType": 0,
+                "childrens": [
+                    {
+                        "reviewTargetId": "008",
+                        "reviewTargetName": "指标2.1",
+                        "reviewTemplateScore": 5,
+                        "reviewTemplateType": 0,
+                        "childrens": [
+                            {
+                                "reviewTargetId": "009",
+                                "reviewTargetName": "指标2.1.1",
+                                "reviewTemplateScore": 5,
+                                "reviewTemplateType": 1,
+                                "childrens":[
+                                    {
+                                        "reviewTargetId": "006",
+                                        "reviewTargetName": "指标2.1.1.1",
+                                        "reviewTemplateScore": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }];
+    }
+</script>
+</body>
+</html>

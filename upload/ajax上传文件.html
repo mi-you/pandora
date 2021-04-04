@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-table.css" />
+</head>
+<body>
+    <input type="text" name="userName">
+    <input type="file" name="file" id="file">
+    <button onclick="aaa()">提交</button>
+<script src="js/jquery.js"></script>
+<script>
+        function aaa(){
+            var file = document.getElementById("file").files[0]
+            var formData = new FormData()
+            formData.append("file",file);
+            formData.append("userName","miyou")
+            $.ajax({
+                url: 'https://www.baidu.com',
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (arg) {
+                }
+            })
+        }
+</script>
+</body>
+</html>
